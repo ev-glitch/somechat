@@ -1,1 +1,1 @@
-# dumbchat client written in c
+# somechat client written in c
