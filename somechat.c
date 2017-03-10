@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 
 int start_chat()
 {
@@ -14,12 +17,39 @@ int start_chat()
         if( (read = getline(&line, &len, stream)) == -1)
             exit(-1);
         printf("Read %d chars, \"%s\"\n", len, line);
+
     } while( len != 0);
 
     return 0;
     
 }
+// chat_connect will generate a duplex socket between two hosts on
+// an agreed upon port and begin exchanging chat messages.
 
+/*  chat_connect()
+{
+    socket(AF_INET, SOCK_STREAM, );
+*/
+
+// chat_request takes host information from the user and sends a
+// datagram request to the host on port XXX 
+
+/*  chat_request()
+    {
+    sendto()
+*/
+
+// chat_service will listen on port XX for new datagram requests to 
+// chat.
+
+/*  chat_service()
+*/
+    
+// chat_listener takes a duplex socket and monitors for incoming 
+// messages.
+
+/*  chat_listener()
+*/
 
 int main(int argc, char *argv[])
 {
@@ -33,16 +63,30 @@ int main(int argc, char *argv[])
     int port = 5666;
     printf("Connecting to host %s, port %d.\n", host, port);
 
-    //connect();    
+    char  client_mode    = 'C';
+    char* client_prompt = "Command>> ";
+    ssize_t client_read = 0;
+    char* client_input = NULL;
+    size_t client_input_len = 0;
+    FILE* chat_stream = stdin;
+    struct protoent* tcp_proto_data = getprotobyname("tcp");
+    struct protoent* udp_proto_data = getprotobyname("udp");
     do {
-        // blah blah
-        printf("Please give me input: ");
-        input = getc(stdin);
-        getc(stdin);
-        if(input == 'C')
-        {
+        // print prompt
+        printf("%s", client_prompt);
+
+        // get new input
+        if( (client_read = getline(&client_input, &client_input_len, chat_stream)) == -1)
+            exit(-1);
+
+        // Process input according to client_mode
+        if( client_mode == 'C')
             start_chat();
-        }
+            return 0;
+        else if( client_mode == 'T')
+            return 0;
+
+        
 
     } while( input != 'Q' );
 
